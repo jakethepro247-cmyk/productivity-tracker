@@ -1,3 +1,5 @@
+'use client'
+
 import { Task } from './TaskList'
 
 export default function ProgressBar({ tasks }: { tasks: Task[] }) {

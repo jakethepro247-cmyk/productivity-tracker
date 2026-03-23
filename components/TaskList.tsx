@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect, useTransition } from 'react'
 import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText } from 'lucide-react'
 import { toggleTaskComplete, deleteTask, updateTask } from '@/app/dashboard/actions'
