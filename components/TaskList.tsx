@@ -41,7 +41,7 @@ function TaskItem({ task }: { task: Task }) {
   const [isRunning, setIsRunning] = useState(false)
   const [elapsed, setElapsed] = useState(task.duration_seconds || 0)
   const [description, setDescription] = useState(task.description || '')
-  const [dueDate, setDueDate] = useState(task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : '')
+  const [dueDate, setDueDate] = useState(task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : '')
 
   useEffect(() => {
     let interval: any
@@ -213,10 +213,10 @@ function TaskItem({ task }: { task: Task }) {
           <div className="flex flex-col gap-2">
             <label className="text-[10px] uppercase tracking-wider font-bold text-zinc-500 flex items-center gap-1.5">
               <CalendarIcon className="h-3 w-3" />
-              Deadline
+              Deadline & Time
             </label>
             <input
-              type="date"
+              type="datetime-local"
               value={dueDate}
               onChange={(e) => handleDateChange(e.target.value)}
               className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-red-500/50 focus:border-red-500/50 transition-all [color-scheme:dark]"

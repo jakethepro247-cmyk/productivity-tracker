@@ -91,15 +91,19 @@ export default function CalendarView({ tasks }: { tasks: Task[] }) {
               </span>
               
               <div className="mt-2 flex flex-col gap-1.5 overflow-y-auto max-h-[80px] custom-scrollbar">
-                {dayTasks.map(task => (
-                  <div 
-                    key={task.id} 
-                    className={`text-[10px] p-1.5 rounded-md truncate border border-l-2 ${task.completed ? 'bg-zinc-800/50 border-zinc-700 text-zinc-500 line-through border-l-zinc-600' : 'bg-red-500/10 border-red-500/20 text-red-200 border-l-red-500'}`}
-                    title={task.title}
-                  >
-                    {task.title}
-                  </div>
-                ))}
+                {dayTasks.sort((a, b) => (a.due_date || '').localeCompare(b.due_date || '')).map(task => {
+                  const timeStr = task.due_date ? new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''
+                  return (
+                    <div 
+                      key={task.id} 
+                      className={`text-[9px] p-1 rounded-md border border-l-2 flex flex-col gap-0.5 ${task.completed ? 'bg-zinc-800/50 border-zinc-700 text-zinc-500 line-through border-l-zinc-600' : 'bg-red-500/10 border-red-500/20 text-red-100 border-l-red-500'}`}
+                      title={`${task.title} ${timeStr ? `- ${timeStr}` : ''}`}
+                    >
+                      {timeStr && <span className="font-bold opacity-70 flex items-center gap-1"><Clock className="h-2 w-2" />{timeStr}</span>}
+                      <span className="truncate">{task.title}</span>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )
