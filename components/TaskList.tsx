@@ -36,12 +36,27 @@ function TaskItem({ task }: { task: Task }) {
   const [isPendingComplete, startCompleteTransition] = useTransition()
   const [isPendingDelete, startDeleteTransition] = useTransition()
   const [isExpanded, setIsExpanded] = useState(false)
-  
+  // Helper to format date for datetime-local input (YYYY-MM-DDTHH:mm)
+  const formatForInput = (dateStr: string | null | undefined) => {
+    if (!dateStr) return ''
+    const date = new Date(dateStr)
+    const offset = date.getTimezoneOffset()
+    const localDate = new Date(date.getTime() - (offset * 60 * 1000))
+    return localDate.toISOString().slice(0, 16)
+  }
+
   // Timer and Form state
   const [isRunning, setIsRunning] = useState(false)
   const [elapsed, setElapsed] = useState(task.duration_seconds || 0)
   const [description, setDescription] = useState(task.description || '')
-  const [dueDate, setDueDate] = useState(task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : '')
+  const [dueDate, setDueDate] = useState(formatForInput(task.due_date))
+
+  // Sync state with props when they change (important for server revalidation)
+  useEffect(() => {
+    setElapsed(task.duration_seconds || 0)
+    setDescription(task.description || '')
+    setDueDate(formatForInput(task.due_date))
+  }, [task.duration_seconds, task.description, task.due_date])
 
   useEffect(() => {
     let interval: any
