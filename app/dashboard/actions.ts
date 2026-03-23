@@ -65,3 +65,18 @@ export async function deleteTask(id: string) {
 
   revalidatePath('/dashboard')
 }
+
+export async function updateTask(id: string, updates: { description?: string, duration_seconds?: number }) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('tasks')
+    .update(updates)
+    .match({ id })
+
+  if (error) {
+    console.error('Error updating task:', error)
+  }
+
+  revalidatePath('/dashboard')
+}
