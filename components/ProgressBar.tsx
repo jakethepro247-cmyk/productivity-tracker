@@ -1,9 +1,4 @@
-'use client'
-
-type Task = {
-  id: string
-  completed: boolean
-}
+import { Task } from './TaskList'
 
 export default function ProgressBar({ tasks }: { tasks: Task[] }) {
   const total = tasks?.length || 0

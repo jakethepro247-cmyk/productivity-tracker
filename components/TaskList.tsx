@@ -1,16 +1,14 @@
-'use client'
-
-import { useState, useEffect, useTransition, useCallback } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText } from 'lucide-react'
 import { toggleTaskComplete, deleteTask, updateTask } from '@/app/dashboard/actions'
 
-type Task = {
+export type Task = {
   id: string
   title: string
   completed: boolean
   created_at: string
-  description: string | null
-  duration_seconds: number
+  description?: string | null
+  duration_seconds?: number | null
 }
 
 export default function TaskList({ tasks }: { tasks: Task[] }) {
@@ -42,7 +40,7 @@ function TaskItem({ task }: { task: Task }) {
   const [description, setDescription] = useState(task.description || '')
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: any
     if (isRunning) {
       interval = setInterval(() => {
         setElapsed((prev) => prev + 1)
@@ -126,7 +124,7 @@ function TaskItem({ task }: { task: Task }) {
             {elapsed > 0 && (
               <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold flex items-center gap-1">
                 <Clock className="h-2.5 w-2.5" />
-                {formatTime(elapsed)}Spent
+                {formatTime(elapsed)} Spent
               </span>
             )}
           </div>
