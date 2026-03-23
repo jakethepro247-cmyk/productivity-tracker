@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
+import { useState, useEffect, useTransition, useCallback } from 'react'
 import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText, Calendar as CalendarIcon } from 'lucide-react'
 import { toggleTaskComplete, deleteTask, updateTask } from '@/app/dashboard/actions'
 
@@ -12,6 +12,7 @@ export type Task = {
   description?: string | null
   duration_seconds?: number | null
   due_date?: string | null
+  timer_started_at?: string | null
 }
 
 export default function TaskList({ tasks }: { tasks: Task[] }) {
@@ -45,28 +46,40 @@ function TaskItem({ task }: { task: Task }) {
     return localDate.toISOString().slice(0, 16)
   }
 
+  // Helper to get total elapsed time including currently running duration
+  const getElapsed = useCallback(() => {
+    let base = task.duration_seconds || 0
+    if (task.timer_started_at) {
+      const start = new Date(task.timer_started_at).getTime()
+      const now = new Date().getTime()
+      base += Math.floor((now - start) / 1000)
+    }
+    return base
+  }, [task.duration_seconds, task.timer_started_at])
+
   // Timer and Form state
-  const [isRunning, setIsRunning] = useState(false)
-  const [elapsed, setElapsed] = useState(task.duration_seconds || 0)
+  const [isRunning, setIsRunning] = useState(!!task.timer_started_at)
+  const [elapsed, setElapsed] = useState(getElapsed())
   const [description, setDescription] = useState(task.description || '')
   const [dueDate, setDueDate] = useState(formatForInput(task.due_date))
 
   // Sync state with props when they change (important for server revalidation)
   useEffect(() => {
-    setElapsed(task.duration_seconds || 0)
+    setIsRunning(!!task.timer_started_at)
+    setElapsed(getElapsed())
     setDescription(task.description || '')
     setDueDate(formatForInput(task.due_date))
-  }, [task.duration_seconds, task.description, task.due_date])
+  }, [task.duration_seconds, task.description, task.due_date, task.timer_started_at, getElapsed])
 
   useEffect(() => {
     let interval: any
     if (isRunning) {
       interval = setInterval(() => {
-        setElapsed((prev) => prev + 1)
+        setElapsed(getElapsed())
       }, 1000)
     }
     return () => clearInterval(interval)
-  }, [isRunning])
+  }, [isRunning, getElapsed])
 
   const handleToggle = () => {
     startCompleteTransition(() => {
@@ -84,8 +97,16 @@ function TaskItem({ task }: { task: Task }) {
 
   const handleTimerToggle = () => {
     if (isRunning) {
-      // Pause: Sync with DB
-      updateTask(task.id, { duration_seconds: elapsed })
+      // Pause: Save calculated duration and clear start time
+      updateTask(task.id, { 
+        duration_seconds: elapsed,
+        timer_started_at: null 
+      })
+    } else {
+      // Start: Set start time to now
+      updateTask(task.id, { 
+        timer_started_at: new Date().toISOString() 
+      })
     }
     setIsRunning(!isRunning)
   }
@@ -93,7 +114,10 @@ function TaskItem({ task }: { task: Task }) {
   const handleTimerReset = () => {
     setIsRunning(false)
     setElapsed(0)
-    updateTask(task.id, { duration_seconds: 0 })
+    updateTask(task.id, { 
+      duration_seconds: 0,
+      timer_started_at: null 
+    })
   }
 
   const handleDescriptionBlur = () => {
