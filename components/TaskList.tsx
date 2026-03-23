@@ -36,7 +36,9 @@ export default function TaskList({ tasks }: { tasks: Task[] }) {
 function TaskItem({ task }: { task: Task }) {
   const [isPendingComplete, startCompleteTransition] = useTransition()
   const [isPendingDelete, startDeleteTransition] = useTransition()
+  const [isPendingTimer, startTimerTransition] = useTransition()
   const [isExpanded, setIsExpanded] = useState(false)
+  
   // Helper to format date for datetime-local input (YYYY-MM-DDTHH:mm)
   const formatForInput = (dateStr: string | null | undefined) => {
     if (!dateStr) return ''
@@ -58,19 +60,20 @@ function TaskItem({ task }: { task: Task }) {
   }, [task.duration_seconds, task.timer_started_at])
 
   // Timer and Form state
-  const [isRunning, setIsRunning] = useState(!!task.timer_started_at)
+  // We derive isRunning directly from the prop to ensure it stays in sync with the server
+  const isRunning = !!task.timer_started_at
   const [elapsed, setElapsed] = useState(getElapsed())
   const [description, setDescription] = useState(task.description || '')
   const [dueDate, setDueDate] = useState(formatForInput(task.due_date))
 
-  // Sync state with props when they change (important for server revalidation)
+  // Sync internal state with props when they change
   useEffect(() => {
-    setIsRunning(!!task.timer_started_at)
     setElapsed(getElapsed())
     setDescription(task.description || '')
     setDueDate(formatForInput(task.due_date))
   }, [task.duration_seconds, task.description, task.due_date, task.timer_started_at, getElapsed])
 
+  // Real-time tick
   useEffect(() => {
     let interval: any
     if (isRunning) {
@@ -96,27 +99,29 @@ function TaskItem({ task }: { task: Task }) {
   }
 
   const handleTimerToggle = () => {
-    if (isRunning) {
-      // Pause: Save calculated duration and clear start time
-      updateTask(task.id, { 
-        duration_seconds: elapsed,
-        timer_started_at: null 
-      })
-    } else {
-      // Start: Set start time to now
-      updateTask(task.id, { 
-        timer_started_at: new Date().toISOString() 
-      })
-    }
-    setIsRunning(!isRunning)
+    startTimerTransition(() => {
+      if (isRunning) {
+        // Pause: Save calculated duration and clear start time
+        updateTask(task.id, { 
+          duration_seconds: elapsed,
+          timer_started_at: null 
+        })
+      } else {
+        // Start: Set start time to now
+        updateTask(task.id, { 
+          timer_started_at: new Date().toISOString() 
+        })
+      }
+    })
   }
 
   const handleTimerReset = () => {
-    setIsRunning(false)
-    setElapsed(0)
-    updateTask(task.id, { 
-      duration_seconds: 0,
-      timer_started_at: null 
+    startTimerTransition(() => {
+      setElapsed(0)
+      updateTask(task.id, { 
+        duration_seconds: 0,
+        timer_started_at: null 
+      })
     })
   }
 
