@@ -57,10 +57,10 @@ function TaskItem({ task }: { task: Task }) {
         <button
           onClick={handleToggle}
           disabled={isPending}
-          className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-zinc-950 ${
+          className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-950 ${
             task.completed
-              ? 'border-indigo-500 bg-indigo-500 text-white'
-              : 'border-zinc-600 text-transparent hover:border-indigo-400'
+              ? 'border-red-500 bg-red-500 text-white'
+              : 'border-zinc-600 text-transparent hover:border-red-400'
           }`}
         >
           {task.completed ? <Check className="h-4 w-4" /> : null}

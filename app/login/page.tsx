@@ -12,8 +12,8 @@ export default async function LoginPage({
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4">
       <div className="w-full max-w-sm rounded-2xl border border-zinc-900 bg-zinc-950 p-8 shadow-2xl">
         <div className="mb-8 flex flex-col items-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 mb-4">
-            <CheckCircle2 className="h-6 w-6 text-indigo-400" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 mb-4">
+            <CheckCircle2 className="h-6 w-6 text-red-400" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Welcome back</h1>
           <p className="text-sm text-zinc-400 text-center">
@@ -32,7 +32,7 @@ export default async function LoginPage({
               type="email"
               placeholder="you@example.com"
               required
-              className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+              className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors"
             />
           </div>
 
@@ -47,7 +47,7 @@ export default async function LoginPage({
               placeholder="••••••••"
               required
               minLength={6}
-              className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+              className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors"
             />
           </div>
 

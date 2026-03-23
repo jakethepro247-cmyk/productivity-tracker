@@ -20,11 +20,11 @@ export default function ProgressBar({ tasks }: { tasks: Task[] }) {
             {completed} <span className="text-zinc-500 text-lg font-medium">/ {total} tasks</span>
           </p>
         </div>
-        <span className="text-sm font-bold text-indigo-400">{percentage}%</span>
+        <span className="text-sm font-bold text-red-400">{percentage}%</span>
       </div>
       <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
         <div 
-          className="h-full bg-indigo-500 transition-all duration-500 ease-out"
+          className="h-full bg-red-500 transition-all duration-500 ease-out"
           style={{ width: `${percentage}%` }}
         />
       </div>

@@ -49,11 +49,11 @@ export default async function DashboardPage() {
               name="title"
               placeholder="What needs to be done?"
               required
-              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-base text-white placeholder-zinc-500 shadow-sm focus:border-indigo-500 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3.5 text-base text-white placeholder-zinc-500 shadow-sm focus:border-red-500 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-red-500 transition-all"
             />
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-zinc-950 transition-all sm:w-auto w-full"
+              className="flex items-center justify-center gap-2 rounded-xl bg-red-500 px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-950 transition-all sm:w-auto w-full"
             >
               <Plus className="h-5 w-5" />
               Add Task

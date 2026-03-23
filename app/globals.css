@@ -9,8 +9,8 @@
   --color-zinc-300: #d4d4d8;
   --color-zinc-200: #e4e4e7;
   
-  --color-indigo-500: #6366f1;
-  --color-indigo-400: #818cf8;
+  --color-red-500: #ef4444;
+  --color-red-400: #f87171;
 }
 
 @layer base {
