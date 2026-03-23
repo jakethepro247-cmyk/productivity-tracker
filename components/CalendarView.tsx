@@ -31,8 +31,11 @@ export default function CalendarView({ tasks }: { tasks: Task[] }) {
 
   const getTasksForDate = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return []
-    const dateStr = new Date(year, month, day).toISOString().split('T')[0]
-    return tasks.filter(task => task.due_date && task.due_date.startsWith(dateStr))
+    return tasks.filter(task => {
+      if (!task.due_date) return false
+      const d = new Date(task.due_date)
+      return d.getFullYear() === year && d.getMonth() === month && d.getDate() === day
+    })
   }
 
   const isToday = (day: number, isCurrentMonth: boolean) => {
