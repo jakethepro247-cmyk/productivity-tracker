@@ -19,24 +19,12 @@ export default async function DashboardPage() {
   const tasks = await getTasks()
 
   return (
-    <div className="mx-auto max-w-2xl p-4 pt-12 sm:p-8 sm:pt-20">
-      <header className="mb-12 flex items-center justify-between border-b border-zinc-800 pb-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Dashboard</h1>
-          <p className="text-sm text-zinc-400">
-            Welcome back, {user.email?.split('@')[0]}
-          </p>
-        </div>
-        
-        <form action={signout}>
-          <button 
-            type="submit"
-            className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </button>
-        </form>
+    <div className="mx-auto max-w-2xl">
+      <header className="mb-12">
+        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">My Tasks</h1>
+        <p className="text-sm text-zinc-400">
+          Manage your daily objectives and keep track of your progress.
+        </p>
       </header>
 
       <main>

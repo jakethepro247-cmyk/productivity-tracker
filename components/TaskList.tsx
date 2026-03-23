@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
-import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText } from 'lucide-react'
+import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText, Calendar as CalendarIcon } from 'lucide-react'
 import { toggleTaskComplete, deleteTask, updateTask } from '@/app/dashboard/actions'
 
 export type Task = {
@@ -11,6 +11,7 @@ export type Task = {
   created_at: string
   description?: string | null
   duration_seconds?: number | null
+  due_date?: string | null
 }
 
 export default function TaskList({ tasks }: { tasks: Task[] }) {
@@ -36,10 +37,11 @@ function TaskItem({ task }: { task: Task }) {
   const [isPendingDelete, startDeleteTransition] = useTransition()
   const [isExpanded, setIsExpanded] = useState(false)
   
-  // Timer state
+  // Timer and Form state
   const [isRunning, setIsRunning] = useState(false)
   const [elapsed, setElapsed] = useState(task.duration_seconds || 0)
   const [description, setDescription] = useState(task.description || '')
+  const [dueDate, setDueDate] = useState(task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : '')
 
   useEffect(() => {
     let interval: any
@@ -83,6 +85,11 @@ function TaskItem({ task }: { task: Task }) {
     if (description !== task.description) {
       updateTask(task.id, { description })
     }
+  }
+
+  const handleDateChange = (newDate: string) => {
+    setDueDate(newDate)
+    updateTask(task.id, { due_date: newDate ? new Date(newDate).toISOString() : null })
   }
 
   const formatTime = (seconds: number) => {
@@ -199,6 +206,20 @@ function TaskItem({ task }: { task: Task }) {
               onBlur={handleDescriptionBlur}
               placeholder="Add more details about this task..."
               className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-red-500/50 focus:border-red-500/50 min-h-[80px] transition-all resize-none"
+            />
+          </div>
+
+          {/* Deadline Section */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] uppercase tracking-wider font-bold text-zinc-500 flex items-center gap-1.5">
+              <CalendarIcon className="h-3 w-3" />
+              Deadline
+            </label>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => handleDateChange(e.target.value)}
+              className="w-full bg-zinc-950/50 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:ring-1 focus:ring-red-500/50 focus:border-red-500/50 transition-all [color-scheme:dark]"
             />
           </div>
         </div>
