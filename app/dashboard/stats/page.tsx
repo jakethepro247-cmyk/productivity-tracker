@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { getTasks } from '../actions'
-import StatsView from '@/components/StatsView'
+import StatsView from '../../../components/StatsView'
 
 export default async function StatsPage() {
   const supabase = await createClient()
