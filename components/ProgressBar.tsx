@@ -1,6 +1,6 @@
 'use client'
 
-import { Task } from './TaskList'
+import type { Task } from '@/types'
 
 export default function ProgressBar({ tasks }: { tasks: Task[] }) {
   const total = tasks?.length || 0
