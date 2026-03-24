@@ -68,9 +68,7 @@ export async function deleteTask(id: string) {
 
 export async function updateTask(id: string, updates: { 
   description?: string, 
-  duration_seconds?: number, 
-  due_date?: string | null,
-  timer_started_at?: string | null
+  due_date?: string | null
 }) {
   const supabase = await createClient()
 
@@ -84,4 +82,22 @@ export async function updateTask(id: string, updates: {
   }
 
   revalidatePath('/dashboard')
+}
+
+// Separate action for timer updates - NO revalidation to prevent remounting mid-tick
+export async function updateTimerState(id: string, updates: { 
+  duration_seconds?: number, 
+  timer_started_at?: string | null
+}) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('tasks')
+    .update(updates)
+    .match({ id })
+
+  if (error) {
+    console.error('Error updating timer state:', error)
+  }
+  // Intentionally no revalidatePath here - the client handles the timer display
 }

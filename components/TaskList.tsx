@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition, useCallback } from 'react'
 import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText, Calendar as CalendarIcon } from 'lucide-react'
-import { toggleTaskComplete, deleteTask, updateTask } from '@/app/dashboard/actions'
+import { toggleTaskComplete, deleteTask, updateTask, updateTimerState } from '@/app/dashboard/actions'
 
 export type Task = {
   id: string
@@ -101,14 +101,14 @@ function TaskItem({ task }: { task: Task }) {
   const handleTimerToggle = () => {
     startTimerTransition(() => {
       if (isRunning) {
-        // Pause: Save calculated duration and clear start time
-        updateTask(task.id, { 
+        // Pause: Save calculated duration and clear start time (no page reload)
+        updateTimerState(task.id, { 
           duration_seconds: elapsed,
           timer_started_at: null 
         })
       } else {
-        // Start: Set start time to now
-        updateTask(task.id, { 
+        // Start: Set start time to now (no page reload)
+        updateTimerState(task.id, { 
           timer_started_at: new Date().toISOString() 
         })
       }
@@ -118,7 +118,7 @@ function TaskItem({ task }: { task: Task }) {
   const handleTimerReset = () => {
     startTimerTransition(() => {
       setElapsed(0)
-      updateTask(task.id, { 
+      updateTimerState(task.id, { 
         duration_seconds: 0,
         timer_started_at: null 
       })
@@ -219,13 +219,16 @@ function TaskItem({ task }: { task: Task }) {
               <div className="flex gap-2">
                 <button
                   onClick={handleTimerToggle}
+                  disabled={isPendingTimer}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                    isPendingTimer ? 'opacity-50 cursor-wait' : ''
+                  } ${
                     isRunning 
                     ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' 
                     : 'bg-red-500 text-white hover:bg-red-400 shadow-sm shadow-red-500/20'
                   }`}
                 >
-                  {isRunning ? <><Pause className="h-3 w-3" /> Pause</> : <><Play className="h-3 w-3" /> Start</>}
+                  {isPendingTimer ? '...' : (isRunning ? <><Pause className="h-3 w-3" /> Pause</> : <><Play className="h-3 w-3" /> Start</>)}
                 </button>
                 <button
                   onClick={handleTimerReset}
