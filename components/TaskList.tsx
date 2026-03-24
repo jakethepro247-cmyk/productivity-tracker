@@ -72,18 +72,16 @@ function TaskItem({ task }: { task: Task }) {
   }, [task.duration_seconds, task.timer_started_at])
 
   // Timer and Form state
-  // We derive isRunning directly from the prop to ensure it stays in sync with the server
-  const isRunning = !!task.timer_started_at
+  const [isRunning, setIsRunning] = useState(!!task.timer_started_at)
   const [elapsed, setElapsed] = useState(getElapsed())
   const [description, setDescription] = useState(task.description || '')
   const [dueDate, setDueDate] = useState(formatForInput(task.due_date))
 
-  // Sync internal state with props when they change
+  // Sync state cleanly when props change from server transitions
   useEffect(() => {
+    setIsRunning(!!task.timer_started_at)
     setElapsed(getElapsed())
-    setDescription(task.description || '')
-    setDueDate(formatForInput(task.due_date))
-  }, [task.duration_seconds, task.description, task.due_date, task.timer_started_at, getElapsed])
+  }, [task.timer_started_at, getElapsed])
 
   // Real-time tick
   useEffect(() => {
@@ -111,30 +109,21 @@ function TaskItem({ task }: { task: Task }) {
   }
 
   const handleTimerToggle = () => {
-    startTimerTransition(() => {
-      if (isRunning) {
-        // Pause: Save calculated duration and clear start time (no page reload)
-        updateTimerState(task.id, { 
-          duration_seconds: elapsed,
-          timer_started_at: null 
-        })
-      } else {
-        // Start: Set start time to now (no page reload)
-        updateTimerState(task.id, { 
-          timer_started_at: new Date().toISOString() 
-        })
-      }
-    })
+    const nowRunning = !isRunning;
+    setIsRunning(nowRunning); // Immediate UI update (optimistic)
+
+    if (nowRunning) {
+      const startIso = new Date().toISOString()
+      updateTask(task.id, { timer_started_at: startIso })
+    } else {
+      updateTask(task.id, { duration_seconds: elapsed, timer_started_at: null })
+    }
   }
 
   const handleTimerReset = () => {
-    startTimerTransition(() => {
-      setElapsed(0)
-      updateTimerState(task.id, { 
-        duration_seconds: 0,
-        timer_started_at: null 
-      })
-    })
+    setIsRunning(false);
+    setElapsed(0);
+    updateTask(task.id, { duration_seconds: 0, timer_started_at: null })
   }
 
   const handleDescriptionBlur = () => {
@@ -232,16 +221,13 @@ function TaskItem({ task }: { task: Task }) {
               <div className="flex gap-2">
                 <button
                   onClick={handleTimerToggle}
-                  disabled={isPendingTimer}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
-                    isPendingTimer ? 'opacity-50 cursor-wait' : ''
-                  } ${
                     isRunning 
                     ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' 
                     : 'bg-red-500 text-white hover:bg-red-400 shadow-sm shadow-red-500/20'
                   }`}
                 >
-                  {isPendingTimer ? '...' : (isRunning ? <><Pause className="h-3 w-3" /> Pause</> : <><Play className="h-3 w-3" /> Start</>)}
+                  {isRunning ? <><Pause className="h-3 w-3" /> Pause</> : <><Play className="h-3 w-3" /> Start</>}
                 </button>
                 <button
                   onClick={handleTimerReset}

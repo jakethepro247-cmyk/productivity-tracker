@@ -68,6 +68,8 @@ export async function deleteTask(id: string) {
 
 export async function updateTask(id: string, updates: { 
   description?: string, 
+  duration_seconds?: number,
+  timer_started_at?: string | null,
   due_date?: string | null
 }) {
   const supabase = await createClient()
