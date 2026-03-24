@@ -4,16 +4,9 @@ import { useState, useEffect, useTransition, useCallback } from 'react'
 import { Check, Trash2, Play, Pause, Square, ChevronDown, ChevronUp, Clock, FileText, Calendar as CalendarIcon } from 'lucide-react'
 import { toggleTaskComplete, deleteTask, updateTask, updateTimerState } from '@/app/dashboard/actions'
 
-export type Task = {
-  id: string
-  title: string
-  completed: boolean
-  created_at: string
-  description?: string | null
-  duration_seconds?: number | null
-  due_date?: string | null
-  timer_started_at?: string | null
-}
+import type { Task } from '@/types'
+
+export type { Task }
 
 export default function TaskList({ tasks }: { tasks: Task[] }) {
   if (!tasks || tasks.length === 0) {
