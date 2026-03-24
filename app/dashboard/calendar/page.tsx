@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { getTasks } from '../actions'
-import CalendarView from '@/components/CalendarView'
+import CalendarView from '../../../components/CalendarView'
 
 export default async function CalendarPage() {
   const supabase = await createClient()
