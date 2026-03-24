@@ -30,7 +30,26 @@ function TaskItem({ task }: { task: Task }) {
   const [isPendingComplete, startCompleteTransition] = useTransition()
   const [isPendingDelete, startDeleteTransition] = useTransition()
   const [isPendingTimer, startTimerTransition] = useTransition()
+  
+  // UI State: Persist expanded state in localStorage
   const [isExpanded, setIsExpanded] = useState(false)
+  
+  useEffect(() => {
+    const stored = localStorage.getItem(`task_expanded_${task.id}`)
+    if (stored === 'true') {
+      setIsExpanded(true)
+    }
+  }, [task.id])
+
+  const toggleExpanded = () => {
+    const newState = !isExpanded
+    setIsExpanded(newState)
+    if (newState) {
+      localStorage.setItem(`task_expanded_${task.id}`, 'true')
+    } else {
+      localStorage.removeItem(`task_expanded_${task.id}`)
+    }
+  }
   
   // Helper to format date for datetime-local input (YYYY-MM-DDTHH:mm)
   const formatForInput = (dateStr: string | null | undefined) => {
@@ -178,12 +197,13 @@ function TaskItem({ task }: { task: Task }) {
 
         <div className="flex items-center gap-1">
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={toggleExpanded}
             className={`flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-800 transition-colors ${isExpanded ? 'bg-zinc-800 text-zinc-200' : ''}`}
             aria-label="Toggle details"
           >
             {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
+
           
           <button
             onClick={handleDelete}
