@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { CheckSquare, Calendar as CalendarIcon, LogOut } from 'lucide-react'
+import { CheckSquare, Calendar, BarChart2, LogOut } from 'lucide-react'
 import { signout } from '@/app/login/actions'
 
 export default function DashboardLayout({
@@ -14,7 +14,8 @@ export default function DashboardLayout({
 
   const navItems = [
     { name: 'Tasks', href: '/dashboard', icon: CheckSquare },
-    { name: 'Calendar', href: '/dashboard/calendar', icon: CalendarIcon },
+    { name: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
+    { name: 'Stats', href: '/dashboard/stats', icon: BarChart2 },
   ]
 
   return (
