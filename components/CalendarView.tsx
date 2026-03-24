@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react'
 import type { Task } from '@/types'
 
-export default function CalendarView({ tasks }: { tasks: Task[] }) {
+export function CalendarView({ tasks }: { tasks: Task[] }) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
   // Calendar logic
@@ -122,3 +122,5 @@ export default function CalendarView({ tasks }: { tasks: Task[] }) {
     </div>
   )
 }
+
+export default CalendarView
