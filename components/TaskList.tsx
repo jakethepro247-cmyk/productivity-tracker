@@ -60,39 +60,48 @@ function TaskItem({ task }: { task: Task }) {
     return localDate.toISOString().slice(0, 16)
   }
 
-  // Helper to get total elapsed time including currently running duration
-  const getElapsed = useCallback(() => {
+  // Timer and Form state
+  const [isRunning, setIsRunning] = useState(!!task.timer_started_at)
+  
+  // Calculate initial elapsed time
+  const [elapsed, setElapsed] = useState(() => {
     let base = task.duration_seconds || 0
     if (task.timer_started_at) {
       const start = new Date(task.timer_started_at).getTime()
-      const now = new Date().getTime()
+      const now = Date.now()
       base += Math.floor((now - start) / 1000)
     }
     return base
-  }, [task.duration_seconds, task.timer_started_at])
+  })
 
-  // Timer and Form state
-  const [isRunning, setIsRunning] = useState(!!task.timer_started_at)
-  const [elapsed, setElapsed] = useState(getElapsed())
   const [description, setDescription] = useState(task.description || '')
   const [dueDate, setDueDate] = useState(formatForInput(task.due_date))
 
   // Sync state cleanly when props change from server transitions
   useEffect(() => {
     setIsRunning(!!task.timer_started_at)
-    setElapsed(getElapsed())
-  }, [task.timer_started_at, getElapsed])
+    setDescription(task.description || '')
+    setDueDate(formatForInput(task.due_date))
+    
+    let base = task.duration_seconds || 0
+    if (task.timer_started_at) {
+      const start = new Date(task.timer_started_at).getTime()
+      const now = Date.now()
+      base += Math.floor((now - start) / 1000)
+    }
+    setElapsed(base)
+  }, [task.timer_started_at, task.duration_seconds, task.description, task.due_date])
 
   // Real-time tick
   useEffect(() => {
     let interval: any
     if (isRunning) {
       interval = setInterval(() => {
-        setElapsed(getElapsed())
+        setElapsed(prev => prev + 1)
       }, 1000)
     }
     return () => clearInterval(interval)
-  }, [isRunning, getElapsed])
+  }, [isRunning])
 
   const handleToggle = () => {
     startCompleteTransition(() => {
