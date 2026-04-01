@@ -5,8 +5,22 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Parallax Clone - Productivity Tracker',
-  description: 'A zero-cost, high-performance productivity tracker',
+  title: 'Rekt Productivity',
+  description: 'A high-performance objective and time tracking workspace.',
+  openGraph: {
+    title: 'Rekt Productivity',
+    description: 'A high-performance objective and time tracking workspace.',
+    type: 'website',
+    siteName: 'Rekt Track',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Rekt Productivity',
+    description: 'A high-performance objective and time tracking workspace.',
+  },
+  icons: {
+    icon: '/icon.svg',
+  }
 }
 
 export default function RootLayout({
